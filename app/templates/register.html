@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pl">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="../static/css/register.css">
+
+    <title>Create account</title>
+</head>
+
+<body onload="init()">
+    <div class="wrapper">
+        <section id=form-card class="card container form-wrapper">
+            <h1 class="title ">Create account</h1>
+
+            <form action="" method="POST" id="form">
+                <table class="table">
+                    <tr>
+                        <td>
+                            <label for="login"><b>Login:</b></label>
+
+                        </td>
+                        <td>
+                            <input id="login" type="text" class="form-control" placeholder="login" name="login"
+                                id="loginInput">
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="email"><b>Email:</b></label>
+
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" placeholder="email" name="email" id="email">
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
+                            <label for="password"><b>Password:</b></label>
+
+                        </td>
+                        <td>
+                            <input type="password" class="form-control" placeholder="password" name="password"
+                                id="password">
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="passwordConformation"><b>Confirm password:</b></label>
+
+                        </td>
+                        <td>
+                            <input id="confirm-password" type="password" class="form-control"
+                                placeholder="confirm password" name="passwordConfirmation">
+
+                        </td>
+                    </tr>
+
+                </table>
+                <div class="submit-button">
+                    <button type="submit" id="submitButton" class="btn btn-primary">Create</button>
+
+                </div>
+            </form>
+
+        </section>
+    </div>
+    <script src="../static/js/register.js"></script>
+</body>
+
+</html>
