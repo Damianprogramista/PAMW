@@ -96,7 +96,7 @@ function confirmPasswordValidate() {
 function loginValidate() {
     let login = document.getElementById('login')
     let errorMessage = document.createElement("small");
-    login.addEventListener('keyup', e => {
+    login.addEventListener('keyup', debounce(e => {
         if (login.value === '') {
             login.classList.remove('is-valid');
             login.classList.add('is-invalid');
@@ -105,10 +105,10 @@ function loginValidate() {
             login.parentNode.insertBefore(errorMessage, login.nextSibling)
         }
         else {
-            fetch("http://localhost:3000/user/" + login.value)
-            .then(resp => {
-                console.log(resp.status)
-                if (resp.status == 200) {
+            fetch("/user/" + login.value)
+            .then(resp => resp.json())
+            .then(data => {
+                if (data.exists) {
                     login.classList.remove('is-valid');
                     login.classList.add('is-invalid');
                     errorMessage.style = "color: red";
@@ -125,7 +125,7 @@ function loginValidate() {
             })
         }
         
-    })
+    }, 300))
 
 }
 function createAccount() {
@@ -145,7 +145,7 @@ function createAccount() {
         for (var i = 0; i < form.length-2; ++i) {
             formData.append(form[i].name, form[i].value);
         }
-        fetch("http://localhost:3000/register", {
+        fetch("/create-user", {
             method: 'POST',
             body: formData,
         })
@@ -160,4 +160,12 @@ function createAccount() {
             form.parentNode.insertBefore(message, form.nextSibling)
         })
     })
+}
+
+function debounce(fn, duration) {
+  var timer;
+  return function(){
+    clearTimeout(timer);
+    timer = setTimeout(fn, duration);
+  }
 }

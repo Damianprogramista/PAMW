@@ -1,2 +1,5 @@
 flask
 flask-cors
+flask-jwt-extended
+gunicorn==19.9.0
+redis

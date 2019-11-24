@@ -11,3 +11,7 @@ services:
       - "3000:80"
     volumes:
       - ./app:/app
+    depends_on:
+      - redis
+  redis:
+    image: redis

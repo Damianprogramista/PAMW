@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pl">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="../static/css/register.css">
+
+    <title>Login</title>
+</head>
+
+<!--<body onload="init()">-->
+<div class="wrapper">
+    <section id=form-card class="card container form-wrapper">
+        <h1 class="title ">Login</h1>
+
+        <form action="/login" method="POST" id="form" class="login_form" enctype="multipart/form-data">
+            <table class="table login_table">
+                    <tr>
+                        <td>
+                            <label for="login"><b>Login:</b></label>
+                        </td>
+                        <td>
+                            <input id="login" type="text" class="form-control" placeholder="login" name="login"
+                                id="loginInput">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="password"><b>Password:</b></label>
+                        </td>
+                        <td>
+                            <input type="password" class="form-control" placeholder="password" name="password"
+                                id="password">
+
+                        </td>
+                    </tr>
+            </table>
+
+            <button type="submit" class="btn btn-primary">Log in</button>
+            <button type="button" style="margin-left: 10px" onclick="location.href='/'" class="btn btn-secondary">Back</button>
+
+        </form>
+        {% if error %}
+            <span class="text-danger">{{ error }}</span>
+        {% endif %}
+
+    </section>
+</div>
+<!--<script src="../static/js/register.js"></script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+</body>
+
+</html>
+<script>
+
+</script>
