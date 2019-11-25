@@ -1,0 +1,108 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "pamw",
+    "version": "1.0.0",
+    "title": "PAMW Project",
+    "contact": {
+      "email": "mail@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "PAWM",
+      "description": "App created for PAWM project"
+    }
+  ],
+  "paths": {
+    "/create-user": {
+      "post": {
+        "tags": [
+          "User Request"
+        ],
+        "summary": "Create a new user",
+        "requestBody": {
+          "description": "User Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRequestPostBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/UserRequests"
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "id": {
+        "properties": {
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      "UserRequestPostBody": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "format": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+
+        }
+      },
+      "UserRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "format": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "number"
+          }
+        }
+      },
+      "UserRequests": {
+        "type": "object",
+        "properties": {
+          "bookRequest": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/UserRequest"
+            }
+          }
+        }
+      }
+    }
+  }
+}

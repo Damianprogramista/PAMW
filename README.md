@@ -16,4 +16,10 @@ docker-compose up --build
 open http://localhost:3000
 ```
 
+## Swagger
+Swagger dostępny pod adresem
+```
+http://localhost:3000/swagger/
+```
+
 

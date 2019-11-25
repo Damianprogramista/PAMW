@@ -9,6 +9,7 @@ from flask_jwt_extended import (
     create_refresh_token, set_refresh_cookies, unset_jwt_cookies,
     get_jwt_identity, set_access_cookies, verify_jwt_in_request, verify_jwt_in_request_optional
 )
+from flask_swagger_ui import get_swaggerui_blueprint
 
 application = Flask(__name__)
 CORS(application)
@@ -25,6 +26,17 @@ jwt = JWTManager(application)
 
 # db = redis.from_url(os.environ.get("REDIS_URL"))
 db = redis.Redis('redis')
+
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.json'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "Seans-Python-Flask-REST-Boilerplate"
+    }
+)
+application.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 
 def not_logged_required(fn):
