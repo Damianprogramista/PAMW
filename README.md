@@ -1,11 +1,19 @@
-## Docker
-Build Image
+## Heroku
+Gotowa aplkacja:
+
+https://pamiw.herokuapp.com/
+
+Przykładowy zarejestrowany użytkownik:
 ```
-docker build -t pamw .
+Login: user
+Password: pass
 ```
 
-Run Image
+## Docker-compose
+Uruchomienie docker-compose
 ```
-docker run -p 3000:80 pamw
+docker-compose up --build
 open http://localhost:3000
+```
+
 

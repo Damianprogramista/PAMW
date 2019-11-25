@@ -40,7 +40,7 @@ function passwordValidate() {
     let errorMessage = document.createElement("small");
     errorMessage.style = "color: red";
     password.addEventListener('keyup', e => {
-        if (password.value.length >= 8) {
+        if (password.value.length >= 4) {
             password.classList.add('is-valid');
             password.classList.remove('is-invalid');
             if (password.parentNode.contains(errorMessage)) {
@@ -54,7 +54,7 @@ function passwordValidate() {
                 errorMessage.innerHTML = "Password cannot be empty"
             }
             else {
-                errorMessage.innerHTML = "Must have at least 8 characters";
+                errorMessage.innerHTML = "Must have at least 4 characters";
             }
             password.parentNode.insertBefore(errorMessage, password.nextSibling)
         }
@@ -67,7 +67,7 @@ function confirmPasswordValidate() {
     let errorMessage = document.createElement("small");
     errorMessage.style = "color: red";
     password.addEventListener('keyup', e => {
-        if (password.value.length >= 8 
+        if (password.value.length >= 4
             && password.value === document.getElementById('password').value) {
             password.classList.add('is-valid');
             password.classList.remove('is-invalid');
@@ -81,8 +81,8 @@ function confirmPasswordValidate() {
             if (!password.value.length) {
                 errorMessage.innerHTML = "Password cannot be empty"
             }
-            else if(password.value.length < 8 ){
-                errorMessage.innerHTML = "Must have at least 8 characters";
+            else if(password.value.length < 4 ){
+                errorMessage.innerHTML = "Must have at least 4 characters";
             }
             else {
                 errorMessage.innerHTML = "Password does not match";
@@ -150,9 +150,8 @@ function createAccount() {
             body: formData,
         })
         .then(e => {
-            message.style = "color: green"
-            message.innerHTML = "Account created"
-            form.parentNode.insertBefore(message, form.nextSibling)
+            location.href='/'
+            alert("Account created!")
         })
         .catch(e => {
             message.style = "color: red"

@@ -1,17 +1,19 @@
-from flask import Flask, request, render_template, make_response, jsonify, url_for
+from flask import Flask, request, render_template, make_response, jsonify, send_file
 from flask_cors import CORS
+from functools import wraps
 import os
 import redis
 from hashlib import sha256
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
-    create_refresh_token, set_refresh_cookies,
-    get_jwt_identity, set_access_cookies,
+    create_refresh_token, set_refresh_cookies, unset_jwt_cookies,
+    get_jwt_identity, set_access_cookies, verify_jwt_in_request, verify_jwt_in_request_optional
 )
 
 application = Flask(__name__)
 CORS(application)
 
+application.config["CACHE_TYPE"] = "null"
 
 application.config['JWT_TOKEN_LOCATION'] = ['cookies']
 application.config['JWT_ACCESS_TOKEN_EXPIRES'] = 300
@@ -21,24 +23,52 @@ application.config['JWT_SECRET_KEY'] = 'super-secret'
 
 jwt = JWTManager(application)
 
-db = redis.from_url(os.environ.get("REDIS_URL"))
+# db = redis.from_url(os.environ.get("REDIS_URL"))
+db = redis.Redis('redis')
+
+
+def not_logged_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        try:
+            verify_jwt_in_request()
+            if get_jwt_identity():
+                return redirect_resp('/')
+        except Exception as e:
+            pass
+        return fn(*args, **kwargs)
+    return wrapper
 
 
 @application.route('/', methods=['GET'])
 def app_index():
-    return render_template('welcome.html', error=db)
+    user = None
+    files = None
+    try:
+        verify_jwt_in_request_optional()
+        user = get_jwt_identity()
+        if user:
+            user1 = "f" + str(user)
+            files = db.smembers(user1)
+    except Exception as e:
+        print(e)
+
+    return render_template('welcome.html', user=user, files=files)
 
 
 @application.route('/login', methods=['GET'])
+@not_logged_required
 def login_view():
     return render_template('login.html')
 
 
 @application.route('/login', methods=['POST'])
+@not_logged_required
 def login():
     username = request.form.get('login', None)
     password = request.form.get('password', None)
     password_hash = sha256(password.encode()).hexdigest().encode()
+
     if password_hash != db.hget('users', username):
         return render_template('login.html', error="Invalid login or password.")
 
@@ -51,22 +81,64 @@ def login():
     return resp
 
 
-def redirect_resp(url):
+def redirect_resp(url, message=None):
     resp = make_response('', 303)
     resp.headers['Location'] = url
+    if message:
+        resp.data['message'] = message
     return resp
 
 
-@application.route('/api/example', methods=['GET'])
+@application.route("/api/upload", methods=["POST"])
 @jwt_required
-def protected():
-    username = get_jwt_identity()
-    return jsonify({'hello': 'from {}'.format(username)}), 200
+def upload():
+    user = get_jwt_identity()
+    file = request.files['pdf']
+    response = redirect_resp('/')
+    ext = file.filename.split(".")[-1]
+    if ext != 'pdf':
+        return response
+
+    save_file(file, str(user))
+    return response
 
 
-@application.route('/register/', methods=['GET'])
+def save_file(file_to_save, user):
+    if len(file_to_save.filename) > 0:
+        new_filename = file_to_save.filename
+
+        path_to_file = 'files/' + new_filename
+        file_to_save.save(path_to_file)
+        file = {"path": path_to_file, "user": user}
+        db.hmset(new_filename, file)
+        user1 = "f"+user
+        db.sadd(user1, new_filename)
+    else:
+        response = redirect_resp('/')
+        return response
+
+
+@application.route("/api/download/<file>", methods=['GET', 'POST'])
+@jwt_required
+def download_file(file):
+    try:
+        path = "files/"+file
+        return send_file(path)
+    except Exception as e:
+        return make_response('Error getting file', 404)
+
+
+@application.route('/register', methods=['GET'])
+@not_logged_required
 def register_view():
     return render_template('register.html')
+
+
+@application.route('/logout')
+def logout():
+    response = redirect_resp('/')
+    unset_jwt_cookies(response)
+    return response
 
 
 @application.route('/user/<username>', methods=['GET'])
@@ -78,6 +150,7 @@ def user_exists(username):
 
 
 @application.route('/create-user', methods=['POST'])
+@not_logged_required
 def save_user():
     form = request.form
     user = {
@@ -89,7 +162,7 @@ def save_user():
     password_hash = sha256(user['password'].encode()).hexdigest()
     db.hset('users', user['login'], password_hash)
 
-    return render_template('welcome.html')
+    return make_response('', 200)
 
 
 if __name__ == "__main__":

@@ -12,13 +12,38 @@
     <link rel="stylesheet" href="../static/css/welcome.css">
     <title>Welcome</title>
 </head>
-<body>
-    <div class="content">
-        <h3 class="title m-t-40">Welcome!</h3>
-        <div class="btn-container">
-            <button type="button" onclick="location.href='register'" class="btn btn-success m-r-10">Create account</button>
-            <button type="button" onclick="location.href='login'" class="btn btn-primary">Log in</button>
+<body onload="init()">
+<div class="wrapper content">
+    <section class="card container" style="padding-bottom: 30px">
+        <h3 class="title m-t-40">Welcome{% if user %} {{ user }}{% endif %}!</h3>
+        <div id="btn_container">
+            {% if user %}
+                <button type="button" onclick="location.href='logout'" class="btn btn-secondary">Log out</button>
+                <form style="margin-top: 60px" action="/api/upload" enctype="multipart/form-data" method="POST">
+                    <label class="btn btn-dark" for="my-file-selector">
+                        <input id="my-file-selector" type="file" style="display:none" name="pdf"
+                               onchange="$('#upload-file-info').html(this.files[0].name)">
+                        Browse
+                    </label>
+                    <button id="btn_upload" type="submit" class="btn btn-info" style="margin-left: 10px">Upload file</button>
+                </form>
+                <span class='label label-info' id="upload-file-info">Choose file first</span>
+            {% else %}
+                <button type="button" onclick="location.href='register'" class="btn btn-success m-r-10">Create account
+                </button>
+                <button type="button" onclick="location.href='login'" class="btn btn-primary">Log in</button>
+            {% endif %}
+            {% if files %}
+                <h4 style="margin-top: 30px; margin-bottom: 10px">Your files :</h4>
+                {% for file in files %}
+                    <a href="/api/download/{{ file.decode() }}" class="file" target="blank" download>{{ file.decode() }}</a><br>
+                {% endfor %}
+            {% endif %}
         </div>
-    </div>
+
+    </section>
+</div>
+<script src="../static/js/upload_validator.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </body>
 </html>
