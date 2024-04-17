@@ -1,6 +1,6 @@
 flask
 flask-cors
 flask-jwt-extended
-gunicorn==19.9.0
+gunicorn==22.0.0
 redis
 flask_swagger_ui
